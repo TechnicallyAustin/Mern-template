@@ -5,6 +5,7 @@ const db = require('./db/index');
 const fs = require('fs');
 const cors = require('cors');
 
+// Initialize Express App
 const app = express();
 
 // Connect to MongoDB
@@ -16,20 +17,21 @@ app.use(express.json());
 // CORS
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 
+// Auto-load all routes from /routes
+fs.readdirSync('./routes').forEach(file => {
+    if (file.endsWith('.js')) {
+        const route = require(`./routes/${file}`);
+        const routeName = file.replace('.js', '');
+        app.use(`/api/${routeName}`, route);
+    }
+});
+
+// JWT Authentication
+
 // Default Route
 if (process.env.NODE_ENV === 'development') {
   app.get('/', (req, res) => res.json({ message: 'API running' }));
 }
-
-
-// Auto-load all routes from /routes
-fs.readdirSync('./routes').forEach(file => {
-  if (file.endsWith('.js')) {
-    const route = require(`./routes/${file}`);
-    const routeName = file.replace('.js', '');
-    app.use(`/api/${routeName}`, route);
-  }
-});
 
 // React Frontend
 if (process.env.NODE_ENV === 'production') {

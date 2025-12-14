@@ -18,6 +18,7 @@ const createUser = async (data) => new User(data).save();
 const updateUser = async (id, data) => User.findByIdAndUpdate(id, data, { new: true });
 const deleteUser = async (id) => User.findByIdAndDelete(id);
 
+
 module.exports = {
   connectDB,
   getAllUsers,
